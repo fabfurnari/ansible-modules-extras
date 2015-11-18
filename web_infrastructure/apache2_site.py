@@ -50,9 +50,12 @@ def _disable_site(module):
     name = module.params['name']
     a2dissite_binary = module.get_bin_path("a2dissite")
     if a2dissite_binary is None:
-        module.fail_json(msg="a2dissite not found.  Perhaps this system does not use a2dissite to manage apache")
+        module.fail_json(msg="a2dissite not found. Perhaps this system does not use a2dissite to manage apache")
 
-    purge = '--purge' if module.params['purge'] else ''
+    if module.params['purge']:
+        purge = '--purge'
+    else:
+        purge = ''
     cmd = "{} {} {}".format(a2dissite_binary, purge, name)
     result, stdout, stderr = module.run_command(cmd)
 
@@ -67,7 +70,7 @@ def _enable_site(module):
     name = module.params['name']
     a2ensite_binary = module.get_bin_path("a2ensite")
     if a2ensite_binary is None:
-        module.fail_json(msg="a2ensite not found.  Perhaps this system does not use a2ensite to manage apache")
+        module.fail_json(msg="a2ensite not found. Perhaps this system does not use a2ensite to manage apache")
 
     result, stdout, stderr = module.run_command("%s %s" % (a2ensite_binary, name))
 
